@@ -1,55 +1,262 @@
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <title>JS Lab</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, serif;
-        }
-
-        h1 {
-            color: #0B3954;
-        }
-		.green{color: green};
-    </style>
+    <meta charset="utf-8">
+    <meta name="Keywords" content="Refleksomierzacz" />
+    <meta name="Author" content="Dawid Sarna" />
+    <!--<link rel="stylesheet" href="layout.css">-->
+    <title>Refleksomierzacz</title>
 </head>
-<body>
-<div id="app">
-    <h1 id="main-header">Moja aplikacja</h1>
-    <p>To będzie gra. A oto co muszę zrobić:</p>
-    <ol>
-        <li class="boring">Nauczyć się HTML</li>
-        <li class="boring">Nauczyć się CSS</li>
-        <li>Nauczyć się JS</li>
-        <li id="super-important">Zaimplementować</li>
-    </ol>
-	<input type="text" id="myTextField">
-	<input type="checkbox" id="myCheckbox">
-	<button type="button" onclick="readValues()">Odczytaj wartości</button>
-</div>
+
+<body onload="showMainPage()">
+
+<!-- Strona Startowa -->
+<div id="mainPage">
+	<div id="header">
+        <h1>Reflekso<span class="colorAccent">mierzacz</span></h1>
+        <h2><span class="colorAccent">Game create by</span> Dawid Sarna</h2>
+    </div>	
+		
+	<div id="content">  
+		<div id="content_top"></div>
+		<h2> Welcome </h2>
+		<li><a href="#" onclick="changeContent('Start Game');setTrialTime();refleksomierz()" class="li">Start Game</a> </li>
+		<li><a href="#" onclick="changeContent('Options')" class="li">Options</a> </li>
+		<div id="content_bottom"></div>
+    </div>
+</div> 	
+				
+		
+<!-- Rozpocznij gre -->			
+<div id="Start Game" class="main">  
+	<div id="content">  
+		<li><a href="#" onclick="showMainPage();resetAll()" class="li">Stop Game</a> </li>            
+    </div>
+		
+        <div id="content_top"></div>
+        <div id="content_main">
+        	<h2> Press the button if you see fire </h2>
+			<p id="test"></p>
+	
+			<li><a href="#" onclick="pressButton()" class="li"><img src="./images/button.jpg" width="160" height="160"></a> </li>
+			
+<table style="height: 96px; width: 950px;">
+<tbody>
+<tr>
+<td style="width: 158px;">actual reflex time</td>
+<td style="width: 158px;">best reflex time</td>
+<td style="width: 158px;">worst reflex time</td>
+<td style="width: 158px;">average reflex time</td>
+<td style="width: 158px;">total missclicks</td>
+<td style="width: 158px;">current round</td>
+</tr>
+<tr>
+<td style="width: 158px;"><p id="time" </p></td>
+<td style="width: 158px;"><p id = "shortest"</p> </td>
+<td style="width: 158px;"><p id="longest"</p> </td>
+<td style="width: 158px;"><p id="average"</p> </td>
+<td style="width: 158px;"><p id="missclick"</p> </td>
+<td style="width: 158px;"><p id="round"</p></td>
+</tr>
+</tbody>
+</table>
+
+<table style="height: 96px; width: 632px;">
+<tbody>
+<tr>
+<td style="width: 158px;">Total Best reflex time</td>
+<td style="width: 158px;"><p id="bestShort"</p></td>
+<td style="width: 158px;">Total Best average reflex time</td>
+<td style="width: 158px;"><p id="bestAverage"</p></td>
+</tr>
+</tbody>
+</table>
+
+
+		</div>
+        <div id="content_bottom"></div>
+</div>  
+
+<!-- Opcje gry -->		
+<div id="Options" class="main">  
+	<div id="content">  
+		<h2> Set total round count </h2>
+		<li><a href="#" onclick="plusRound()" class="li">+</a> </li>
+		<li><a href="#" onclick="minusRound()" class="li">-</a> </li>
+		<h3> Total round count: </h3>
+		<p id="totalRound"</p>
+		<li><a href="#" onclick="showMainPage()" class="li">Back</a> </li>
+	</div>	
+		
+    <div id="content_top"></div>
+        <div id="content_main">
+		</div>
+        <div id="content_bottom"></div>
+    </div>
+	
+
+</div>  
+
+	<div id="footer">
+        <h3>Kontakt: dasarna@agh.edu.pl</h3>
+    </div>  
+	
 <script>
-
-
-let div = document.createElement('div');
-div.classList.add('green');
-div.innerText = 'Zielony tekst (jeśli dodasz CSS)';
-document.getElementById('app').append(div); // jest też prepend
-
-let listItem = document.createElement('li');
-listItem.innerText = 'Zagrać';
-// dodaję na koniec listy
-document.querySelector("#app ol li:last-child").after(listItem); // jest też before
-function readValues() {
- const isChecked = document.getElementById('myCheckbox').checked;
- if (isChecked) {
-	const text = document.getElementById('myTextField').value;
-	alert(text);
+	function showMainPage(){
+        document.getElementById("content").style.display="block"
+        var main = document.getElementsByClassName("main")
+        for(let n of main){
+			n.style.display ="none"
+			}
+		}
+		
+	function changeContent(element){		
+        var main = document.getElementsByClassName("main")
+        for(let n of main){
+            n.style.display ="none"
+			}
+        var k = document.getElementById(element)
+        k.style.display="block"
+        document.getElementById("content").style.display="none"
+		}  	
+		
+	
+	function pressButton() {
+		if (gameStatus == 1){
+			missclickCounter = missclickCounter + 1;
+			document.getElementById("missclick").innerHTML = missclickCounter;
+			document.getElementById("time").innerHTML = "missclick!";
+		}
+		
+		if (gameStatus == 2){
+			reflexTime = (getTime() - startTime)/1000;
+			document.getElementById("time").innerHTML = reflexTime;	
+			getShortestTime();
+			getLongestTime();
+			getAverageTime();
+			refleksomierz();
+		}
 	}
- }
- 
- const removeBoringStuff = () => document.querySelectorAll("#app .boring").forEach((e) => e.remove());
+	
+	function refleksomierz() {
+		if (attempt < totalRound) {
+			gameStatus = 1;
+			attempt = attempt + 1;
+			document.getElementById("round").innerHTML = attempt;
+			document.getElementById("test").innerHTML ="<img src=\"./images/green.jpg\" width=\"240\" height=\"180\">";
+			setTimeout(setStartTime, trialTime);	
+		}
+		else {
+			gameStatus = 3;
+			document.getElementById("test").innerHTML ="<img src=\"./images/end.jpg\" width=\"240\" height=\"180\">";
+		}		
+	}
+	
+	
+	function setStartTime() {
+		if (gameStatus == 1) {
+			startTime = getTime();
+			gameStatus = 2;
+			document.getElementById("test").innerHTML ="<img src=\"./images/fire.gif\" width=\"240\" height=\"180\">";
+		}
+	}
+	
+	function setTrialTime() {
+		trialTime = 3000+(10000*Math.random());
+	}
+		
+	function getTime(){	
+		var timeInMs = Date.now();	
+		return timeInMs;
+		}
+		
+	function resetAll() {
+		trialTime = 0;	
+		gameStatus = 0;
+		startTime = 0;
+		attempt = 0;
+		missclickCounter = 0;
+		averageTime = 0;
+		sumTime = 0;
+		document.getElementById("time").innerHTML = "-";
+		document.getElementById("shortest").innerHTML = "-";
+		document.getElementById("longest").innerHTML = "-";
+		document.getElementById("average").innerHTML = "-";
+		document.getElementById("missclick").innerHTML = 0;
+		}
+	
+	function getShortestTime() {
+		if (attempt == 1) {
+		shortestTime = reflexTime;
+		if (bestShortestTime == 0) {
+			bestShortestTime = shortestTime
+		}
+		}
+		else {
+			if (shortestTime > reflexTime) {
+				shortestTime = reflexTime;
+			}
+		}
+		
+		if (bestShortestTime > shortestTime) {
+			bestShortestTime = shortestTime
+		}
+		document.getElementById("bestShort").innerHTML = bestShortestTime;
+		document.getElementById("shortest").innerHTML = shortestTime;
+	}
+	
+	function getLongestTime() {
+			if (attempt == 1) {
+		longestTime = reflexTime;
+		}
+		else {
+			if (reflexTime > longestTime) {
+				longestTime = reflexTime;
+			}
+		}
+		document.getElementById("longest").innerHTML = longestTime;
+	}
+	
+	function getAverageTime() {
+		sumTime = sumTime + reflexTime;
+		averageTime = sumTime/attempt;
+		if (bestAverageTime == 0) {
+			bestAverageTime = averageTime;
+		}
+		if (bestAverageTime > averageTime) {
+			bestAverageTime = averageTime;
+		}
+		document.getElementById("bestAverage").innerHTML = bestAverageTime;
+		document.getElementById("average").innerHTML = averageTime;
+	}
+	
+	function plusRound() {
+		if (totalRound < 25) {
+		totalRound = totalRound + 1
+		document.getElementById("totalRound").innerHTML = totalRound;
+		}
+	}
+	
+	function minusRound() {
+		if (totalRound > 1) {
+		totalRound = totalRound - 1
+		document.getElementById("totalRound").innerHTML = totalRound;
+		}
+	}
+	
+	document.getElementById("missclick").innerHTML = 0;
+	document.getElementById("shortest").innerHTML = "-";
+	document.getElementById("longest").innerHTML = "-";
+	document.getElementById("average").innerHTML = "-";
+	document.getElementById("time").innerHTML = "-";
+	document.getElementById("test").innerHTML ="<img src=\"./images/green.jpg\" width=\"240\" height=\"180\">";
+	gameStatus = 0;
+	attempt = 0;
+	sumTime = 0;	
+	missclickCounter = 0;
+	bestAverageTime = 0;
+	bestShortestTime = 0;
+	totalRound = 5;
+	document.getElementById("totalRound").innerHTML = totalRound;
 </script>
 </body>
 </html>
